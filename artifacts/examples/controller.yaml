@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: custommetric-controller-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: custommetric-controller-clusterrole-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: custommetric-controller-sa
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: custommetric-controller
+  name: custommetric-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: custommetric-controller
+  template:
+    metadata:
+      labels:
+        app: custommetric-controller
+    spec:
+      containers:
+      - image: gcr.io/nmiu-play/prom-operator:latest
+        imagePullPolicy: Always
+        name: custommetric-controller
+        resources:
+          limits:
+            cpu: 300m
+            memory: 300Mi
+          requests:
+            cpu: 300m
+            memory: 300Mi
+      serviceAccountName: custommetric-controller-sa

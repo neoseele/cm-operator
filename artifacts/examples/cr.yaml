@@ -1,0 +1,11 @@
+apiVersion: promoperator.k8s.io/v1alpha1
+kind: CustomMetric
+metadata:
+  name: cm
+spec:
+  projectName: nmiu-play
+  clusterName: cr-aua
+  location: us-central1-a
+  sidecarTag: 0.8.0
+  sidecarArgs:
+    - --include={__name__=~"processed_ops.*"} #metrics to be collected
