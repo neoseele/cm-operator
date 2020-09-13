@@ -52,7 +52,7 @@ make build-local
 make build-dockerhub
 ```
 
-## Running
+## Deploy
 
 **Prerequisite**: Since the prom-operator uses `apps/v1` deployments, the Kubernetes cluster version should be greater than 1.9.
 
