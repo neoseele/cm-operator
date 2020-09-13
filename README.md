@@ -58,11 +58,13 @@ make build-dockerhub
 
 ```sh
 # create the CRD, spin up the prom-operator and create a demo CR
-./artifacts/deploy.sh
+cd ./artifacts/examples
+./deploy.sh
 ```
 
 ## Teardown
 
 ```sh
-./artifacts/remove.sh
+cd ./artifacts/examples
+./remove.sh
 ```
