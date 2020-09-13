@@ -3,9 +3,8 @@ kind: CustomMetric
 metadata:
   name: cm
 spec:
-  projectName: nmiu-play
-  clusterName: cr-aua
+  project: nmiu-play
+  cluster: cr-aua
   location: us-central1-a
-  sidecarTag: 0.8.0
-  sidecarArgs:
-    - --include={__name__=~"processed_ops.*"} #metrics to be collected
+  metrics:
+    - processed_ops.*

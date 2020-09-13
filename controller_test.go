@@ -75,9 +75,13 @@ func newCustomMetric(name string, replicas *int32) *promoperator.CustomMetric {
 			Namespace: metav1.NamespaceDefault,
 		},
 		Spec: promoperator.CustomMetricSpec{
-			ProjectName: fmt.Sprintf("%s-project", name),
-			ClusterName: fmt.Sprintf("%s-cluster", name),
-			Location:    "us-central1-a",
+			Project:  fmt.Sprintf("%s-project", name),
+			Cluster:  fmt.Sprintf("%s-cluster", name),
+			Location: "us-central1-a",
+			Metrics: []string{
+				"metric1",
+				"metric2",
+			},
 		},
 	}
 }

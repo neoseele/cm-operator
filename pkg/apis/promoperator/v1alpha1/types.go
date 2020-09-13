@@ -34,11 +34,10 @@ type CustomMetric struct {
 
 // CustomMetricSpec is the spec for a CustomMetric resource
 type CustomMetricSpec struct {
-	ProjectName string   `json:"projectName"`
-	ClusterName string   `json:"clusterName"`
-	Location    string   `json:"location"`
-	SidecarTag  string   `json:"sidecarTag"`
-	SidecarArgs []string `json:"sidecarArgs"`
+	Project  string   `json:"project"`
+	Cluster  string   `json:"cluster"`
+	Location string   `json:"location"`
+	Metrics  []string `json:"Metrics"`
 }
 
 // CustomMetricStatus is the status for a CustomMetric resource

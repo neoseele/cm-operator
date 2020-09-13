@@ -542,13 +542,16 @@ func newDeployment(customMetric *promv1alpha1.CustomMetric, resourceName *string
 	}
 
 	sidecarArgs := []string{
-		fmt.Sprintf("--stackdriver.project-id=%s", customMetric.Spec.ProjectName),
-		fmt.Sprintf("--stackdriver.kubernetes.cluster-name=%s", customMetric.Spec.ClusterName),
+		fmt.Sprintf("--stackdriver.project-id=%s", customMetric.Spec.Project),
+		fmt.Sprintf("--stackdriver.kubernetes.cluster-name=%s", customMetric.Spec.Cluster),
 		fmt.Sprintf("--stackdriver.kubernetes.location=%s", customMetric.Spec.Location),
 		"--prometheus.wal-directory=/prometheus/wal",
 		"--log.level=debug",
 	}
-	sidecarArgs = append(sidecarArgs, customMetric.Spec.SidecarArgs...)
+
+	for _, m := range customMetric.Spec.Metrics {
+		sidecarArgs = append(sidecarArgs, fmt.Sprintf("--include={__name__=~\"%s\"}", m))
+	}
 
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -594,7 +597,7 @@ func newDeployment(customMetric *promv1alpha1.CustomMetric, resourceName *string
 						},
 						{
 							Name:  "sidecar",
-							Image: "gcr.io/stackdriver-prometheus/stackdriver-prometheus-sidecar:" + customMetric.Spec.SidecarTag,
+							Image: "gcr.io/stackdriver-prometheus/stackdriver-prometheus-sidecar:0.8.0",
 							Args:  sidecarArgs,
 							Ports: []corev1.ContainerPort{
 								{

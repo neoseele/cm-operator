@@ -16,11 +16,10 @@ spec:
       properties:
         spec:
           required:
-          - projectName
-          - clusterName
+          - project
+          - cluster
           - location
-          - sidecarTag
-          - sidecarArgs
+          - metrics
           properties:
             projectName:
               type: string
@@ -28,9 +27,7 @@ spec:
               type: string
             location:
               type: string
-            sidecarTag:
-              type: string
-            sidecarArgs:
+            metrics:
               type: array
               items:
                 type: string
