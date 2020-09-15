@@ -33,9 +33,9 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
 
-	promoperator "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
-	"k8s.io/prom-operator/pkg/generated/clientset/versioned/fake"
-	informers "k8s.io/prom-operator/pkg/generated/informers/externalversions"
+	cmoperator "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
+	"k8s.io/cm-operator/pkg/generated/clientset/versioned/fake"
+	informers "k8s.io/cm-operator/pkg/generated/informers/externalversions"
 )
 
 var (
@@ -49,7 +49,7 @@ type fixture struct {
 	client     *fake.Clientset
 	kubeclient *k8sfake.Clientset
 	// Objects to put in the store.
-	customMetricLister []*promoperator.CustomMetric
+	custommetricLister []*cmoperator.CustomMetric
 	deploymentLister   []*apps.Deployment
 	// Actions expected to happen on the client.
 	kubeactions []core.Action
@@ -67,14 +67,14 @@ func newFixture(t *testing.T) *fixture {
 	return f
 }
 
-func newCustomMetric(name string, replicas *int32) *promoperator.CustomMetric {
-	return &promoperator.CustomMetric{
-		TypeMeta: metav1.TypeMeta{APIVersion: promoperator.SchemeGroupVersion.String()},
+func newCustomMetric(name string, replicas *int32) *cmoperator.CustomMetric {
+	return &cmoperator.CustomMetric{
+		TypeMeta: metav1.TypeMeta{APIVersion: cmoperator.SchemeGroupVersion.String()},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: metav1.NamespaceDefault,
 		},
-		Spec: promoperator.CustomMetricSpec{
+		Spec: cmoperator.CustomMetricSpec{
 			Project:  fmt.Sprintf("%s-project", name),
 			Cluster:  fmt.Sprintf("%s-cluster", name),
 			Location: "us-central1-a",
@@ -97,14 +97,14 @@ func (f *fixture) newController() (*Controller, informers.SharedInformerFactory,
 		k8sI.Rbac().V1().ClusterRoles(),
 		k8sI.Rbac().V1().ClusterRoleBindings(),
 		k8sI.Core().V1().ConfigMaps(),
-		k8sI.Apps().V1().Deployments(), i.Promoperator().V1alpha1().CustomMetrics())
+		k8sI.Apps().V1().Deployments(), i.Cmoperator().V1alpha1().CustomMetrics())
 
 	c.customMetricsSynced = alwaysReady
 	c.deploymentsSynced = alwaysReady
 	c.recorder = &record.FakeRecorder{}
 
-	for _, f := range f.customMetricLister {
-		i.Promoperator().V1alpha1().CustomMetrics().Informer().GetIndexer().Add(f)
+	for _, f := range f.custommetricLister {
+		i.Cmoperator().V1alpha1().CustomMetrics().Informer().GetIndexer().Add(f)
 	}
 
 	for _, d := range f.deploymentLister {
@@ -114,15 +114,15 @@ func (f *fixture) newController() (*Controller, informers.SharedInformerFactory,
 	return c, i, k8sI
 }
 
-func (f *fixture) run(customMetricName string) {
-	f.runController(customMetricName, true, false)
+func (f *fixture) run(custommetricName string) {
+	f.runController(custommetricName, true, false)
 }
 
-func (f *fixture) runExpectError(customMetricName string) {
-	f.runController(customMetricName, true, true)
+func (f *fixture) runExpectError(custommetricName string) {
+	f.runController(custommetricName, true, true)
 }
 
-func (f *fixture) runController(customMetricName string, startInformers bool, expectError bool) {
+func (f *fixture) runController(custommetricName string, startInformers bool, expectError bool) {
 	c, i, k8sI := f.newController()
 	if startInformers {
 		stopCh := make(chan struct{})
@@ -131,11 +131,11 @@ func (f *fixture) runController(customMetricName string, startInformers bool, ex
 		k8sI.Start(stopCh)
 	}
 
-	err := c.syncHandler(customMetricName)
+	err := c.syncHandler(custommetricName)
 	if !expectError && err != nil {
-		f.t.Errorf("error syncing customMetric: %v", err)
+		f.t.Errorf("error syncing custommetric: %v", err)
 	} else if expectError && err == nil {
-		f.t.Error("expected error syncing customMetric, got nil")
+		f.t.Error("expected error syncing custommetric, got nil")
 	}
 
 	actions := filterInformerActions(f.client.Actions())
@@ -223,8 +223,8 @@ func filterInformerActions(actions []core.Action) []core.Action {
 	ret := []core.Action{}
 	for _, action := range actions {
 		if len(action.GetNamespace()) == 0 &&
-			(action.Matches("list", "customMetrics") ||
-				action.Matches("watch", "customMetrics") ||
+			(action.Matches("list", "custommetrics") ||
+				action.Matches("watch", "custommetrics") ||
 				action.Matches("list", "deployments") ||
 				action.Matches("watch", "deployments")) {
 			continue
@@ -243,17 +243,17 @@ func (f *fixture) expectUpdateDeploymentAction(d *apps.Deployment) {
 	f.kubeactions = append(f.kubeactions, core.NewUpdateAction(schema.GroupVersionResource{Resource: "deployments"}, d.Namespace, d))
 }
 
-func (f *fixture) expectUpdateCustomMetricStatusAction(customMetric *promoperator.CustomMetric) {
-	action := core.NewUpdateAction(schema.GroupVersionResource{Resource: "customMetrics"}, customMetric.Namespace, customMetric)
+func (f *fixture) expectUpdateCustomMetricStatusAction(custommetric *cmoperator.CustomMetric) {
+	action := core.NewUpdateAction(schema.GroupVersionResource{Resource: "custommetrics"}, custommetric.Namespace, custommetric)
 	// TODO: Until #38113 is merged, we can't use Subresource
 	//action.Subresource = "status"
 	f.actions = append(f.actions, action)
 }
 
-func getKey(customMetric *promoperator.CustomMetric, t *testing.T) string {
-	key, err := cache.DeletionHandlingMetaNamespaceKeyFunc(customMetric)
+func getKey(custommetric *cmoperator.CustomMetric, t *testing.T) string {
+	key, err := cache.DeletionHandlingMetaNamespaceKeyFunc(custommetric)
 	if err != nil {
-		t.Errorf("Unexpected error getting key for customMetric %v: %v", customMetric.Name, err)
+		t.Errorf("Unexpected error getting key for custommetric %v: %v", custommetric.Name, err)
 		return ""
 	}
 	return key
@@ -261,64 +261,64 @@ func getKey(customMetric *promoperator.CustomMetric, t *testing.T) string {
 
 func TestCreatesDeployment(t *testing.T) {
 	f := newFixture(t)
-	customMetric := newCustomMetric("test", int32Ptr(1))
+	custommetric := newCustomMetric("test", int32Ptr(1))
 	bar := "bar"
 
-	f.customMetricLister = append(f.customMetricLister, customMetric)
-	f.objects = append(f.objects, customMetric)
+	f.custommetricLister = append(f.custommetricLister, custommetric)
+	f.objects = append(f.objects, custommetric)
 
-	expDeployment := newDeployment(customMetric, &bar)
+	expDeployment := newDeployment(custommetric, &bar)
 	f.expectCreateDeploymentAction(expDeployment)
-	f.expectUpdateCustomMetricStatusAction(customMetric)
+	f.expectUpdateCustomMetricStatusAction(custommetric)
 
-	f.run(getKey(customMetric, t))
+	f.run(getKey(custommetric, t))
 }
 
 func TestDoNothing(t *testing.T) {
 	f := newFixture(t)
-	customMetric := newCustomMetric("test", int32Ptr(1))
+	custommetric := newCustomMetric("test", int32Ptr(1))
 	bar := "bar"
-	d := newDeployment(customMetric, &bar)
+	d := newDeployment(custommetric, &bar)
 
-	f.customMetricLister = append(f.customMetricLister, customMetric)
-	f.objects = append(f.objects, customMetric)
+	f.custommetricLister = append(f.custommetricLister, custommetric)
+	f.objects = append(f.objects, custommetric)
 	f.deploymentLister = append(f.deploymentLister, d)
 	f.kubeobjects = append(f.kubeobjects, d)
 
-	f.expectUpdateCustomMetricStatusAction(customMetric)
-	f.run(getKey(customMetric, t))
+	f.expectUpdateCustomMetricStatusAction(custommetric)
+	f.run(getKey(custommetric, t))
 }
 
 func TestUpdateDeployment(t *testing.T) {
 	f := newFixture(t)
-	customMetric := newCustomMetric("test", int32Ptr(1))
+	custommetric := newCustomMetric("test", int32Ptr(1))
 	bar := "bar"
-	d := newDeployment(customMetric, &bar)
+	d := newDeployment(custommetric, &bar)
 
-	expDeployment := newDeployment(customMetric, &bar)
+	expDeployment := newDeployment(custommetric, &bar)
 
-	f.customMetricLister = append(f.customMetricLister, customMetric)
-	f.objects = append(f.objects, customMetric)
+	f.custommetricLister = append(f.custommetricLister, custommetric)
+	f.objects = append(f.objects, custommetric)
 	f.deploymentLister = append(f.deploymentLister, d)
 	f.kubeobjects = append(f.kubeobjects, d)
 
-	f.expectUpdateCustomMetricStatusAction(customMetric)
+	f.expectUpdateCustomMetricStatusAction(custommetric)
 	f.expectUpdateDeploymentAction(expDeployment)
-	f.run(getKey(customMetric, t))
+	f.run(getKey(custommetric, t))
 }
 
 func TestNotControlledByUs(t *testing.T) {
 	f := newFixture(t)
-	customMetric := newCustomMetric("test", int32Ptr(1))
+	custommetric := newCustomMetric("test", int32Ptr(1))
 	bar := "bar"
-	d := newDeployment(customMetric, &bar)
+	d := newDeployment(custommetric, &bar)
 
 	d.ObjectMeta.OwnerReferences = []metav1.OwnerReference{}
 
-	f.customMetricLister = append(f.customMetricLister, customMetric)
-	f.objects = append(f.objects, customMetric)
+	f.custommetricLister = append(f.custommetricLister, custommetric)
+	f.objects = append(f.objects, custommetric)
 	f.deploymentLister = append(f.deploymentLister, d)
 	f.kubeobjects = append(f.kubeobjects, d)
 
-	f.runExpectError(getKey(customMetric, t))
+	f.runExpectError(getKey(custommetric, t))
 }

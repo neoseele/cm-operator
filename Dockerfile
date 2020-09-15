@@ -1,8 +1,8 @@
 FROM golang:1.15-alpine3.12 as builder
 RUN apk --no-cache add git
 
-RUN mkdir /prom-operator
-WORKDIR /prom-operator
+RUN mkdir /cm-operator
+WORKDIR /cm-operator
 COPY go.mod .
 COPY go.sum .
 
@@ -12,9 +12,9 @@ RUN go mod download
 COPY . .
 
 # Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /go/bin/prom-operator
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /go/bin/cm-operator
 
 FROM alpine:3.12
 RUN apk --no-cache add curl
-COPY --from=builder /go/bin/prom-operator /prom-operator
-ENTRYPOINT ["/prom-operator"]
+COPY --from=builder /go/bin/cm-operator /cm-operator
+ENTRYPOINT ["/cm-operator"]

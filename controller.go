@@ -42,14 +42,14 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
 
-	promv1alpha1 "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
-	clientset "k8s.io/prom-operator/pkg/generated/clientset/versioned"
-	promscheme "k8s.io/prom-operator/pkg/generated/clientset/versioned/scheme"
-	informers "k8s.io/prom-operator/pkg/generated/informers/externalversions/promoperator/v1alpha1"
-	listers "k8s.io/prom-operator/pkg/generated/listers/promoperator/v1alpha1"
+	promv1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
+	clientset "k8s.io/cm-operator/pkg/generated/clientset/versioned"
+	promscheme "k8s.io/cm-operator/pkg/generated/clientset/versioned/scheme"
+	informers "k8s.io/cm-operator/pkg/generated/informers/externalversions/cmoperator/v1alpha1"
+	listers "k8s.io/cm-operator/pkg/generated/listers/cmoperator/v1alpha1"
 )
 
-const controllerAgentName = "prom-operator"
+const controllerAgentName = "cm-operator"
 
 // const configmapName = "prometheus-server-conf"
 // const clusterRoleName = "prometheus"
@@ -110,8 +110,8 @@ func NewController(
 	customMetricInformer informers.CustomMetricInformer) *Controller {
 
 	// Create event broadcaster
-	// Add prom-operator types to the default Kubernetes Scheme so Events can be
-	// logged for prom-operator types.
+	// Add cm-operator types to the default Kubernetes Scheme so Events can be
+	// logged for cm-operator types.
 	utilruntime.Must(promscheme.AddToScheme(scheme.Scheme))
 	klog.V(4).Info("Creating event broadcaster")
 	eventBroadcaster := record.NewBroadcaster()
@@ -361,7 +361,7 @@ func (c *Controller) updateCustomMetricStatus(customMetric *promv1alpha1.CustomM
 	// we must use Update instead of UpdateStatus to update the Status block of the CustomMetric resource.
 	// UpdateStatus will not allow changes to the Spec of the resource,
 	// which is ideal for ensuring nothing other than resource status has been updated.
-	_, err := c.promclientset.PromoperatorV1alpha1().CustomMetrics(customMetric.Namespace).Update(context.TODO(), customMetricCopy, metav1.UpdateOptions{})
+	_, err := c.promclientset.CmoperatorV1alpha1().CustomMetrics(customMetric.Namespace).Update(context.TODO(), customMetricCopy, metav1.UpdateOptions{})
 	return err
 }
 

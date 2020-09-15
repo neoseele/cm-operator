@@ -34,7 +34,7 @@ spec:
         app: custommetric-controller
     spec:
       containers:
-      - image: gcr.io/nmiu-play/prom-operator:latest
+      - image: neoseele/cm-operator:latest
         imagePullPolicy: Always
         name: custommetric-controller
         resources:

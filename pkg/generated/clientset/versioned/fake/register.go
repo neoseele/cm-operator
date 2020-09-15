@@ -24,14 +24,14 @@ import (
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	serializer "k8s.io/apimachinery/pkg/runtime/serializer"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	promoperatorv1alpha1 "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
+	cmoperatorv1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
 )
 
 var scheme = runtime.NewScheme()
 var codecs = serializer.NewCodecFactory(scheme)
 
 var localSchemeBuilder = runtime.SchemeBuilder{
-	promoperatorv1alpha1.AddToScheme,
+	cmoperatorv1alpha1.AddToScheme,
 }
 
 // AddToScheme adds all types of this clientset into the given scheme. This allows composition

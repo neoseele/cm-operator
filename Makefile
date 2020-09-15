@@ -1,4 +1,4 @@
-IMAGE_NAME ?= prom-operator
+IMAGE_NAME ?= cm-operator
 IMAGE_TAG ?= local
 REPO_NAME ?= neoseele
 
@@ -23,7 +23,7 @@ build-dockerhub: build-local # depend on build-local
 	@image_id=$$(docker images $(IMAGE_NAME):$(IMAGE_TAG) --format '{{.ID}}') && \
 	if [ -n "$$image_id" ]; then \
 		echo "$$image_id"; \
-		docker tag $$image_id $(REPO_NAME)/$(IMAGE_NAME):$(IMAGE_TAG); \
+		docker tag $$image_id $(REPO_NAME)/$(IMAGE_NAME); \
 		docker push $(REPO_NAME)/$(IMAGE_NAME); \
 	fi
 

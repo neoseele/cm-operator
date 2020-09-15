@@ -28,9 +28,9 @@ import (
 	// Uncomment the following line to load the gcp plugin (only required to authenticate against GKE clusters).
 	// _ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 
-	clientset "k8s.io/prom-operator/pkg/generated/clientset/versioned"
-	informers "k8s.io/prom-operator/pkg/generated/informers/externalversions"
-	"k8s.io/prom-operator/pkg/signals"
+	clientset "k8s.io/cm-operator/pkg/generated/clientset/versioned"
+	informers "k8s.io/cm-operator/pkg/generated/informers/externalversions"
+	"k8s.io/cm-operator/pkg/signals"
 )
 
 var (
@@ -68,7 +68,7 @@ func main() {
 		kubeInformerFactory.Rbac().V1().ClusterRoleBindings(),
 		kubeInformerFactory.Core().V1().ConfigMaps(),
 		kubeInformerFactory.Apps().V1().Deployments(),
-		promInformerFactory.Promoperator().V1alpha1().CustomMetrics())
+		promInformerFactory.Cmoperator().V1alpha1().CustomMetrics())
 
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)
 	// Start method is non-blocking and runs all registered informers in a dedicated goroutine.

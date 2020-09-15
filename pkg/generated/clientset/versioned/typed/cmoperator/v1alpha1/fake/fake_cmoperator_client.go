@@ -21,20 +21,20 @@ package fake
 import (
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
-	v1alpha1 "k8s.io/prom-operator/pkg/generated/clientset/versioned/typed/promoperator/v1alpha1"
+	v1alpha1 "k8s.io/cm-operator/pkg/generated/clientset/versioned/typed/cmoperator/v1alpha1"
 )
 
-type FakePromoperatorV1alpha1 struct {
+type FakeCmoperatorV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakePromoperatorV1alpha1) CustomMetrics(namespace string) v1alpha1.CustomMetricInterface {
+func (c *FakeCmoperatorV1alpha1) CustomMetrics(namespace string) v1alpha1.CustomMetricInterface {
 	return &FakeCustomMetrics{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakePromoperatorV1alpha1) RESTClient() rest.Interface {
+func (c *FakeCmoperatorV1alpha1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

@@ -1,13 +1,13 @@
-# prom-operator
+# cm-operator
 
 > forked from [sample-controller](https://github.com/kubernetes/sample-controller)
 
-This repository implements a `prom-operator` for watching `CustomMetric` resources as
+This repository implements a `cm-operator` for watching `CustomMetric` resources as
 defined with a CustomResourceDefinition (CRD).
 
 ## Details
 
-The `prom-operator` uses [client-go library](https://github.com/kubernetes/client-go/tree/master/tools/cache) extensively.
+The `cm-operator` uses [client-go library](https://github.com/kubernetes/client-go/tree/master/tools/cache) extensively.
 
 The `CustomMetric` resource creates and manages a `prometheus` server, with a `stackdriver-prometheus-sidecar`, that scrapes the metric(s) you defined and send them to GCP Cloud Monitoring API.
 
@@ -17,7 +17,7 @@ do this yourself using the `./hack/update-codegen.sh` script.
 
 ## Code
 
-`CustomMetric` resource is defined in `pkg/apis/promoperator/v1alpha1/types.go`.
+`CustomMetric` resource is defined in `pkg/apis/cmoperator/v1alpha1/types.go`.
 
 Code regeneration is needed when any changes is made to the resource definition.
 
@@ -28,7 +28,7 @@ Code regeneration is needed when any changes is made to the resource definition.
 The `update-codegen` script will automatically generate the following files &
 directories:
 
-* `pkg/apis/promoperator/v1alpha1/zz_generated.deepcopy.go`
+* `pkg/apis/cmoperator/v1alpha1/zz_generated.deepcopy.go`
 * `pkg/generated/`
 
 Changes should not be made to these files manually, and when creating your own
@@ -54,10 +54,10 @@ make build-dockerhub
 
 ## Deploy
 
-**Prerequisite**: Since the prom-operator uses `apps/v1` deployments, the Kubernetes cluster version should be greater than 1.9.
+**Prerequisite**: Since the cm-operator uses `apps/v1` deployments, the Kubernetes cluster version should be greater than 1.9.
 
 ```sh
-# create the CRD, spin up the prom-operator and create a demo CR
+# create the CRD, spin up the cm-operator and create a demo CR
 cd ./artifacts/examples
 ./deploy.sh
 ```

@@ -24,24 +24,24 @@ import (
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
-	promoperatorv1alpha1 "k8s.io/prom-operator/pkg/generated/clientset/versioned/typed/promoperator/v1alpha1"
+	cmoperatorv1alpha1 "k8s.io/cm-operator/pkg/generated/clientset/versioned/typed/cmoperator/v1alpha1"
 )
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	PromoperatorV1alpha1() promoperatorv1alpha1.PromoperatorV1alpha1Interface
+	CmoperatorV1alpha1() cmoperatorv1alpha1.CmoperatorV1alpha1Interface
 }
 
 // Clientset contains the clients for groups. Each group has exactly one
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	promoperatorV1alpha1 *promoperatorv1alpha1.PromoperatorV1alpha1Client
+	cmoperatorV1alpha1 *cmoperatorv1alpha1.CmoperatorV1alpha1Client
 }
 
-// PromoperatorV1alpha1 retrieves the PromoperatorV1alpha1Client
-func (c *Clientset) PromoperatorV1alpha1() promoperatorv1alpha1.PromoperatorV1alpha1Interface {
-	return c.promoperatorV1alpha1
+// CmoperatorV1alpha1 retrieves the CmoperatorV1alpha1Client
+func (c *Clientset) CmoperatorV1alpha1() cmoperatorv1alpha1.CmoperatorV1alpha1Interface {
+	return c.cmoperatorV1alpha1
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -65,7 +65,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	}
 	var cs Clientset
 	var err error
-	cs.promoperatorV1alpha1, err = promoperatorv1alpha1.NewForConfig(&configShallowCopy)
+	cs.cmoperatorV1alpha1, err = cmoperatorv1alpha1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 // panics if there is an error in the config.
 func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
-	cs.promoperatorV1alpha1 = promoperatorv1alpha1.NewForConfigOrDie(c)
+	cs.cmoperatorV1alpha1 = cmoperatorv1alpha1.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
 	return &cs
@@ -90,7 +90,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.promoperatorV1alpha1 = promoperatorv1alpha1.New(c)
+	cs.cmoperatorV1alpha1 = cmoperatorv1alpha1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

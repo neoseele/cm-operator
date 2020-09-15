@@ -26,10 +26,10 @@ import (
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
 	cache "k8s.io/client-go/tools/cache"
-	promoperatorv1alpha1 "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
-	versioned "k8s.io/prom-operator/pkg/generated/clientset/versioned"
-	internalinterfaces "k8s.io/prom-operator/pkg/generated/informers/externalversions/internalinterfaces"
-	v1alpha1 "k8s.io/prom-operator/pkg/generated/listers/promoperator/v1alpha1"
+	cmoperatorv1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
+	versioned "k8s.io/cm-operator/pkg/generated/clientset/versioned"
+	internalinterfaces "k8s.io/cm-operator/pkg/generated/informers/externalversions/internalinterfaces"
+	v1alpha1 "k8s.io/cm-operator/pkg/generated/listers/cmoperator/v1alpha1"
 )
 
 // CustomMetricInformer provides access to a shared informer and lister for
@@ -62,16 +62,16 @@ func NewFilteredCustomMetricInformer(client versioned.Interface, namespace strin
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.PromoperatorV1alpha1().CustomMetrics(namespace).List(context.TODO(), options)
+				return client.CmoperatorV1alpha1().CustomMetrics(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.PromoperatorV1alpha1().CustomMetrics(namespace).Watch(context.TODO(), options)
+				return client.CmoperatorV1alpha1().CustomMetrics(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&promoperatorv1alpha1.CustomMetric{},
+		&cmoperatorv1alpha1.CustomMetric{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,7 +82,7 @@ func (f *customMetricInformer) defaultInformer(client versioned.Interface, resyn
 }
 
 func (f *customMetricInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&promoperatorv1alpha1.CustomMetric{}, f.defaultInformer)
+	return f.factory.InformerFor(&cmoperatorv1alpha1.CustomMetric{}, f.defaultInformer)
 }
 
 func (f *customMetricInformer) Lister() v1alpha1.CustomMetricLister {

@@ -27,18 +27,18 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
-	v1alpha1 "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
+	v1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
 )
 
 // FakeCustomMetrics implements CustomMetricInterface
 type FakeCustomMetrics struct {
-	Fake *FakePromoperatorV1alpha1
+	Fake *FakeCmoperatorV1alpha1
 	ns   string
 }
 
-var custommetricsResource = schema.GroupVersionResource{Group: "promoperator.k8s.io", Version: "v1alpha1", Resource: "custommetrics"}
+var custommetricsResource = schema.GroupVersionResource{Group: "cmoperator.k8s.io", Version: "v1alpha1", Resource: "custommetrics"}
 
-var custommetricsKind = schema.GroupVersionKind{Group: "promoperator.k8s.io", Version: "v1alpha1", Kind: "CustomMetric"}
+var custommetricsKind = schema.GroupVersionKind{Group: "cmoperator.k8s.io", Version: "v1alpha1", Kind: "CustomMetric"}
 
 // Get takes name of the customMetric, and returns the corresponding customMetric object, and an error if there is any.
 func (c *FakeCustomMetrics) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CustomMetric, err error) {

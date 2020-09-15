@@ -26,8 +26,8 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	rest "k8s.io/client-go/rest"
-	v1alpha1 "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
-	scheme "k8s.io/prom-operator/pkg/generated/clientset/versioned/scheme"
+	v1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
+	scheme "k8s.io/cm-operator/pkg/generated/clientset/versioned/scheme"
 )
 
 // CustomMetricsGetter has a method to return a CustomMetricInterface.
@@ -57,7 +57,7 @@ type customMetrics struct {
 }
 
 // newCustomMetrics returns a CustomMetrics
-func newCustomMetrics(c *PromoperatorV1alpha1Client, namespace string) *customMetrics {
+func newCustomMetrics(c *CmoperatorV1alpha1Client, namespace string) *customMetrics {
 	return &customMetrics{
 		client: c.RESTClient(),
 		ns:     namespace,

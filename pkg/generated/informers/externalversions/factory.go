@@ -27,9 +27,9 @@ import (
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
-	versioned "k8s.io/prom-operator/pkg/generated/clientset/versioned"
-	internalinterfaces "k8s.io/prom-operator/pkg/generated/informers/externalversions/internalinterfaces"
-	promoperator "k8s.io/prom-operator/pkg/generated/informers/externalversions/promoperator"
+	versioned "k8s.io/cm-operator/pkg/generated/clientset/versioned"
+	cmoperator "k8s.io/cm-operator/pkg/generated/informers/externalversions/cmoperator"
+	internalinterfaces "k8s.io/cm-operator/pkg/generated/informers/externalversions/internalinterfaces"
 )
 
 // SharedInformerOption defines the functional option type for SharedInformerFactory.
@@ -172,9 +172,9 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
-	Promoperator() promoperator.Interface
+	Cmoperator() cmoperator.Interface
 }
 
-func (f *sharedInformerFactory) Promoperator() promoperator.Interface {
-	return promoperator.New(f, f.namespace, f.tweakListOptions)
+func (f *sharedInformerFactory) Cmoperator() cmoperator.Interface {
+	return cmoperator.New(f, f.namespace, f.tweakListOptions)
 }

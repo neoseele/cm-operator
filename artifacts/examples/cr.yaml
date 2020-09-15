@@ -1,4 +1,4 @@
-apiVersion: promoperator.k8s.io/v1alpha1
+apiVersion: cmoperator.k8s.io/v1alpha1
 kind: CustomMetric
 metadata:
   name: cm

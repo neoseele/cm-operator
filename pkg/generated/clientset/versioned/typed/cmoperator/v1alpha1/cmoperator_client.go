@@ -20,26 +20,26 @@ package v1alpha1
 
 import (
 	rest "k8s.io/client-go/rest"
-	v1alpha1 "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
-	"k8s.io/prom-operator/pkg/generated/clientset/versioned/scheme"
+	v1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
+	"k8s.io/cm-operator/pkg/generated/clientset/versioned/scheme"
 )
 
-type PromoperatorV1alpha1Interface interface {
+type CmoperatorV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	CustomMetricsGetter
 }
 
-// PromoperatorV1alpha1Client is used to interact with features provided by the promoperator.k8s.io group.
-type PromoperatorV1alpha1Client struct {
+// CmoperatorV1alpha1Client is used to interact with features provided by the cmoperator.k8s.io group.
+type CmoperatorV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *PromoperatorV1alpha1Client) CustomMetrics(namespace string) CustomMetricInterface {
+func (c *CmoperatorV1alpha1Client) CustomMetrics(namespace string) CustomMetricInterface {
 	return newCustomMetrics(c, namespace)
 }
 
-// NewForConfig creates a new PromoperatorV1alpha1Client for the given config.
-func NewForConfig(c *rest.Config) (*PromoperatorV1alpha1Client, error) {
+// NewForConfig creates a new CmoperatorV1alpha1Client for the given config.
+func NewForConfig(c *rest.Config) (*CmoperatorV1alpha1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -48,12 +48,12 @@ func NewForConfig(c *rest.Config) (*PromoperatorV1alpha1Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &PromoperatorV1alpha1Client{client}, nil
+	return &CmoperatorV1alpha1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new PromoperatorV1alpha1Client for the given config and
+// NewForConfigOrDie creates a new CmoperatorV1alpha1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *PromoperatorV1alpha1Client {
+func NewForConfigOrDie(c *rest.Config) *CmoperatorV1alpha1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -61,9 +61,9 @@ func NewForConfigOrDie(c *rest.Config) *PromoperatorV1alpha1Client {
 	return client
 }
 
-// New creates a new PromoperatorV1alpha1Client for the given RESTClient.
-func New(c rest.Interface) *PromoperatorV1alpha1Client {
-	return &PromoperatorV1alpha1Client{c}
+// New creates a new CmoperatorV1alpha1Client for the given RESTClient.
+func New(c rest.Interface) *CmoperatorV1alpha1Client {
+	return &CmoperatorV1alpha1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -81,7 +81,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *PromoperatorV1alpha1Client) RESTClient() rest.Interface {
+func (c *CmoperatorV1alpha1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

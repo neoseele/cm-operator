@@ -1,5 +1,5 @@
 {
-	"ImportPath": "k8s.io/prom-operator",
+	"ImportPath": "k8s.io/cm-operator",
 	"GoVersion": "unknown",
 	"GodepVersion": "gen-godeps",
 	"Packages": [

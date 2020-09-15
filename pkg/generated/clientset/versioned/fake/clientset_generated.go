@@ -24,9 +24,9 @@ import (
 	"k8s.io/client-go/discovery"
 	fakediscovery "k8s.io/client-go/discovery/fake"
 	"k8s.io/client-go/testing"
-	clientset "k8s.io/prom-operator/pkg/generated/clientset/versioned"
-	promoperatorv1alpha1 "k8s.io/prom-operator/pkg/generated/clientset/versioned/typed/promoperator/v1alpha1"
-	fakepromoperatorv1alpha1 "k8s.io/prom-operator/pkg/generated/clientset/versioned/typed/promoperator/v1alpha1/fake"
+	clientset "k8s.io/cm-operator/pkg/generated/clientset/versioned"
+	cmoperatorv1alpha1 "k8s.io/cm-operator/pkg/generated/clientset/versioned/typed/cmoperator/v1alpha1"
+	fakecmoperatorv1alpha1 "k8s.io/cm-operator/pkg/generated/clientset/versioned/typed/cmoperator/v1alpha1/fake"
 )
 
 // NewSimpleClientset returns a clientset that will respond with the provided objects.
@@ -76,7 +76,7 @@ func (c *Clientset) Tracker() testing.ObjectTracker {
 
 var _ clientset.Interface = &Clientset{}
 
-// PromoperatorV1alpha1 retrieves the PromoperatorV1alpha1Client
-func (c *Clientset) PromoperatorV1alpha1() promoperatorv1alpha1.PromoperatorV1alpha1Interface {
-	return &fakepromoperatorv1alpha1.FakePromoperatorV1alpha1{Fake: &c.Fake}
+// CmoperatorV1alpha1 retrieves the CmoperatorV1alpha1Client
+func (c *Clientset) CmoperatorV1alpha1() cmoperatorv1alpha1.CmoperatorV1alpha1Interface {
+	return &fakecmoperatorv1alpha1.FakeCmoperatorV1alpha1{Fake: &c.Fake}
 }

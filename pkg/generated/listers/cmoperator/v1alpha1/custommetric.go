@@ -22,7 +22,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/tools/cache"
-	v1alpha1 "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
+	v1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
 )
 
 // CustomMetricLister helps list CustomMetrics.

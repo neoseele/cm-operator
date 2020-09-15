@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// +k8s:deepcopy-gen=package
-// +groupName=promoperator.k8s.io
+package cmoperator
 
-// Package v1alpha1 is the v1alpha1 version of the API.
-package v1alpha1 // import "k8s.io/prom-operator/pkg/apis/promoperator/v1alpha1"
+// GroupName is the group name used in this package
+const (
+	GroupName = "cmoperator.k8s.io"
+)
