@@ -31,4 +31,4 @@ build-dockerhub: build-local # depend on build-local
 clean:
 	@echo "removing images ..."
 	-@docker rmi $(IMAGE_NAME):$(IMAGE_TAG)
-	-@docker rmi $(REPO_NAME)/$(IMAGE_NAME):$(IMAGE_TAG)
+	-@docker rmi $(REPO_NAME)/$(IMAGE_NAME)

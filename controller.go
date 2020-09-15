@@ -42,9 +42,9 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
 
-	promv1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
+	cmv1alpha1 "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"
 	clientset "k8s.io/cm-operator/pkg/generated/clientset/versioned"
-	promscheme "k8s.io/cm-operator/pkg/generated/clientset/versioned/scheme"
+	cmscheme "k8s.io/cm-operator/pkg/generated/clientset/versioned/scheme"
 	informers "k8s.io/cm-operator/pkg/generated/informers/externalversions/cmoperator/v1alpha1"
 	listers "k8s.io/cm-operator/pkg/generated/listers/cmoperator/v1alpha1"
 )
@@ -74,8 +74,8 @@ const (
 type Controller struct {
 	// kubeclientset is a standard kubernetes clientset
 	kubeclientset kubernetes.Interface
-	// promclientset is a clientset for our own API group
-	promclientset clientset.Interface
+	// cmclientset is a clientset for our own API group
+	cmclientset clientset.Interface
 
 	clusterRolesLister        rbaclisters.ClusterRoleLister
 	clusterRolesSynced        cache.InformerSynced
@@ -102,7 +102,7 @@ type Controller struct {
 // NewController returns a new prom controller
 func NewController(
 	kubeclientset kubernetes.Interface,
-	promclientset clientset.Interface,
+	cmclientset clientset.Interface,
 	clusterRoleInformer rbacinformers.ClusterRoleInformer,
 	clusterRoleBindingInformer rbacinformers.ClusterRoleBindingInformer,
 	configmapInformer coreinformers.ConfigMapInformer,
@@ -112,7 +112,7 @@ func NewController(
 	// Create event broadcaster
 	// Add cm-operator types to the default Kubernetes Scheme so Events can be
 	// logged for cm-operator types.
-	utilruntime.Must(promscheme.AddToScheme(scheme.Scheme))
+	utilruntime.Must(cmscheme.AddToScheme(scheme.Scheme))
 	klog.V(4).Info("Creating event broadcaster")
 	eventBroadcaster := record.NewBroadcaster()
 	eventBroadcaster.StartStructuredLogging(0)
@@ -121,7 +121,7 @@ func NewController(
 
 	controller := &Controller{
 		kubeclientset:             kubeclientset,
-		promclientset:             promclientset,
+		cmclientset:               cmclientset,
 		clusterRolesLister:        clusterRoleInformer.Lister(),
 		clusterRoleBindingsLister: clusterRoleBindingInformer.Lister(),
 		configmapsLister:          configmapInformer.Lister(),
@@ -351,7 +351,7 @@ func (c *Controller) syncHandler(key string) error {
 	return nil
 }
 
-func (c *Controller) updateCustomMetricStatus(customMetric *promv1alpha1.CustomMetric, deployment *appsv1.Deployment) error {
+func (c *Controller) updateCustomMetricStatus(customMetric *cmv1alpha1.CustomMetric, deployment *appsv1.Deployment) error {
 	// NEVER modify objects from the store. It's a read-only, local cache.
 	// You can use DeepCopy() to make a deep copy of original object and modify this copy
 	// Or create a copy manually for better performance
@@ -361,7 +361,7 @@ func (c *Controller) updateCustomMetricStatus(customMetric *promv1alpha1.CustomM
 	// we must use Update instead of UpdateStatus to update the Status block of the CustomMetric resource.
 	// UpdateStatus will not allow changes to the Spec of the resource,
 	// which is ideal for ensuring nothing other than resource status has been updated.
-	_, err := c.promclientset.CmoperatorV1alpha1().CustomMetrics(customMetric.Namespace).Update(context.TODO(), customMetricCopy, metav1.UpdateOptions{})
+	_, err := c.cmclientset.CmoperatorV1alpha1().CustomMetrics(customMetric.Namespace).Update(context.TODO(), customMetricCopy, metav1.UpdateOptions{})
 	return err
 }
 
@@ -418,12 +418,12 @@ func (c *Controller) handleObject(obj interface{}) {
 	}
 }
 
-func newClusterRole(customMetric *promv1alpha1.CustomMetric, resourceName *string) *rbacv1.ClusterRole {
+func newClusterRole(customMetric *cmv1alpha1.CustomMetric, resourceName *string) *rbacv1.ClusterRole {
 	return &rbacv1.ClusterRole{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: *resourceName,
 			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(customMetric, promv1alpha1.SchemeGroupVersion.WithKind("CustomMetric")),
+				*metav1.NewControllerRef(customMetric, cmv1alpha1.SchemeGroupVersion.WithKind("CustomMetric")),
 			},
 		},
 		Rules: []rbacv1.PolicyRule{
@@ -469,12 +469,12 @@ func newClusterRole(customMetric *promv1alpha1.CustomMetric, resourceName *strin
 	}
 }
 
-func newClusterRoleBinding(customMetric *promv1alpha1.CustomMetric, resourceName *string) *rbacv1.ClusterRoleBinding {
+func newClusterRoleBinding(customMetric *cmv1alpha1.CustomMetric, resourceName *string) *rbacv1.ClusterRoleBinding {
 	return &rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: *resourceName,
 			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(customMetric, promv1alpha1.SchemeGroupVersion.WithKind("CustomMetric")),
+				*metav1.NewControllerRef(customMetric, cmv1alpha1.SchemeGroupVersion.WithKind("CustomMetric")),
 			},
 		},
 		RoleRef: rbacv1.RoleRef{
@@ -492,7 +492,7 @@ func newClusterRoleBinding(customMetric *promv1alpha1.CustomMetric, resourceName
 	}
 }
 
-func newConfigMap(customMetric *promv1alpha1.CustomMetric, resourceName *string) *corev1.ConfigMap {
+func newConfigMap(customMetric *cmv1alpha1.CustomMetric, resourceName *string) *corev1.ConfigMap {
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: *resourceName,
@@ -535,7 +535,7 @@ func newConfigMap(customMetric *promv1alpha1.CustomMetric, resourceName *string)
 // newDeployment creates a new Deployment for a CustomMetric resource. It also sets
 // the appropriate OwnerReferences on the resource so handleObject can discover
 // the CustomMetric resource that 'owns' it.
-func newDeployment(customMetric *promv1alpha1.CustomMetric, resourceName *string) *appsv1.Deployment {
+func newDeployment(customMetric *cmv1alpha1.CustomMetric, resourceName *string) *appsv1.Deployment {
 	labels := map[string]string{
 		"app":        "prometheus-server",
 		"controller": customMetric.Name,
@@ -558,7 +558,7 @@ func newDeployment(customMetric *promv1alpha1.CustomMetric, resourceName *string
 			Name:      *resourceName,
 			Namespace: customMetric.Namespace,
 			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(customMetric, promv1alpha1.SchemeGroupVersion.WithKind("CustomMetric")),
+				*metav1.NewControllerRef(customMetric, cmv1alpha1.SchemeGroupVersion.WithKind("CustomMetric")),
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
