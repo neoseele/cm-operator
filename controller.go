@@ -496,6 +496,9 @@ func newConfigMap(customMetric *cmv1alpha1.CustomMetric, resourceName *string) *
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: *resourceName,
+			OwnerReferences: []metav1.OwnerReference{
+				*metav1.NewControllerRef(customMetric, cmv1alpha1.SchemeGroupVersion.WithKind("CustomMetric")),
+			},
 		},
 		Data: map[string]string{
 			"prometheus.yml": `

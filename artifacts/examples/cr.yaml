@@ -4,7 +4,7 @@ metadata:
   name: cm
 spec:
   project: nmiu-play
-  cluster: cr-aua
-  location: us-central1-a
+  cluster: ebpf
+  location: australia-southeast1-a
   metrics:
-    - processed_ops.*
+    - cilium_*

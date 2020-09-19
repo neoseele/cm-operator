@@ -58,13 +58,11 @@ make build-dockerhub
 
 ```sh
 # create the CRD, spin up the cm-operator and create a demo CR
-cd ./artifacts/examples
-./deploy.sh
+make deploy
 ```
 
 ## Teardown
 
 ```sh
-cd ./artifacts/examples
-./remove.sh
+make teardown
 ```
