@@ -6,7 +6,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 if kubectl get node "$1" &>/dev/null; then
-  kubectl annotate --overwrite nodes "$1" 'prometheus.io/scrape'='true' 'prometheus.io/port'='10255'
+  kubectl annotate --overwrite nodes "$1" 'cmoperator.io/scrape'='true' 'cmoperator.io/port'='10255'
 else
   echo "node $1 not found."
 fi

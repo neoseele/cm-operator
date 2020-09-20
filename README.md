@@ -66,3 +66,55 @@ make deploy
 ```sh
 make teardown
 ```
+
+## Usage
+
+### Annotate the pod that needs to be scraped
+
+* `cmoperator.io/scrape` (required)
+* `cmoperator.io/port` (optional, default: `80`)
+* `cmoperator.io/path` (optional, default: `/metrics`)
+
+Example:
+
+```sh
+POD=some_pod
+# create
+kubectl annotate --overwrite pods $POD 'cmoperator.io/scrape'='true' 'cmoperator.io/port'='9990'
+# remove
+kubectl annotate --overwrite pods $POD 'cmoperator.io/scrape-' 'cmoperator.io/port-'
+```
+
+### Annotate the node that needs to be scrapes
+
+> port/path is hardcoded to cadvisor endpoint `:10255/metrics/cadvisor`
+
+* `cmoperator.io/scrape` (required)
+
+Example:
+
+```sh
+NODE=some_node
+# create
+kubectl annotate --overwrite nodes $NODE 'cmoperator.io/scrape'='true'
+# remove
+kubectl annotate --overwrite nodes $NODE 'cmoperator.io/scrape-'
+```
+
+### Create the CR
+
+The listed metrics will be sent to Cloud Monitoring
+
+```yaml
+apiVersion: cmoperator.k8s.io/v1alpha1
+kind: CustomMetric
+metadata:
+  name: cm
+spec:
+  project: nmiu-play
+  cluster: ebpf
+  location: australia-southeast1-a
+  metrics:
+    - cilium_*
+    - container_network_*
+```

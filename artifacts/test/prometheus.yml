@@ -6,16 +6,16 @@ scrape_configs:
     - role: pod
 
   relabel_configs:
-    - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+    - source_labels: [__meta_kubernetes_pod_annotation_cmoperator_io_scrape]
       action: keep
       regex: true
     - source_labels:
-      - __meta_kubernetes_pod_annotationpresent_prometheus_io_path
-      - __meta_kubernetes_pod_annotation_prometheus_io_path
+      - __meta_kubernetes_pod_annotationpresent_cmoperator_io_path
+      - __meta_kubernetes_pod_annotation_cmoperator_io_path
       action: replace
       target_label: __metrics_path__
       regex: true;(.+)
-    - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+    - source_labels: [__address__, __meta_kubernetes_pod_annotation_cmoperator_io_port]
       action: replace
       regex: ([^:]+)(?::\d+)?;(\d+)
       replacement: $1:$2
@@ -37,13 +37,13 @@ scrape_configs:
     - role: node
 
   relabel_configs:
-    - source_labels: [__meta_kubernetes_node_annotation_prometheus_io_scrape]
+    - source_labels: [__meta_kubernetes_node_annotation_cmoperator_io_scrape]
       action: keep
       regex: true
-    - source_labels: [__address__, __meta_kubernetes_node_annotation_prometheus_io_port]
+    - source_labels: [__address__]
       action: replace
-      regex: ([^:]+)(?::\d+)?;(\d+)
-      replacement: $1:$2
+      regex: ([^:]+)(?::\d+)?
+      replacement: $1:10255
       target_label: __address__
     - action: labelmap
       regex: __meta_kubernetes_node_label_(.+)
