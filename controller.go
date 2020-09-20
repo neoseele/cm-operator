@@ -502,34 +502,55 @@ func newConfigMap(customMetric *cmv1alpha1.CustomMetric, resourceName *string) *
 		},
 		Data: map[string]string{
 			"prometheus.yml": `
-      scrape_configs:
+scrape_configs:
 
-      - job_name: 'kubernetes-pods'
+- job_name: 'kubernetes-pods'
 
-        kubernetes_sd_configs:
-        - role: pod
+  kubernetes_sd_configs:
+    - role: pod
 
-        relabel_configs:
-        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-          action: keep
-          regex: true
-        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-          action: replace
-          target_label: __metrics_path__
-          regex: (.+)
-        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-          action: replace
-          regex: ([^:]+)(?::\d+)?;(\d+)
-          replacement: $1:$2
-          target_label: __address__
-        - action: labelmap
-          regex: __meta_kubernetes_pod_label_(.+)
-        - source_labels: [__meta_kubernetes_namespace]
-          action: replace
-          target_label: kubernetes_namespace
-        - source_labels: [__meta_kubernetes_pod_name]
-          action: replace
-          target_label: kubernetes_pod_name
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+      action: keep
+      regex: true
+    - source_labels:
+      - __meta_kubernetes_pod_annotationpresent_prometheus_io_path
+      - __meta_kubernetes_pod_annotation_prometheus_io_path
+      action: replace
+      target_label: __metrics_path__
+      regex: true;(.+)
+    - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+      action: replace
+      regex: ([^:]+)(?::\d+)?;(\d+)
+      replacement: $1:$2
+      target_label: __address__
+    - action: labelmap
+      regex: __meta_kubernetes_pod_label_(.+)
+    - source_labels: [__meta_kubernetes_namespace]
+      action: replace
+      target_label: kubernetes_namespace
+    - source_labels: [__meta_kubernetes_pod_name]
+      action: replace
+      target_label: kubernetes_pod_name
+
+- job_name: 'kubernetes-nodes-cadvisor'
+
+  metrics_path: /metrics/cadvisor
+
+  kubernetes_sd_configs:
+    - role: node
+
+  relabel_configs:
+    - source_labels: [__meta_kubernetes_node_annotation_prometheus_io_scrape]
+      action: keep
+      regex: true
+    - source_labels: [__address__, __meta_kubernetes_node_annotation_prometheus_io_port]
+      action: replace
+      regex: ([^:]+)(?::\d+)?;(\d+)
+      replacement: $1:$2
+      target_label: __address__
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
       `,
 		},
 	}
