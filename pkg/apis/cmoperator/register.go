@@ -18,5 +18,5 @@ package cmoperator
 
 // GroupName is the group name used in this package
 const (
-	GroupName = "cmoperator.k8s.io"
+	GroupName = "cmoperator.io"
 )

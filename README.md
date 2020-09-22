@@ -106,7 +106,7 @@ kubectl annotate --overwrite nodes $NODE 'cmoperator.io/scrape-'
 The listed metrics will be sent to Cloud Monitoring
 
 ```yaml
-apiVersion: cmoperator.k8s.io/v1alpha1
+apiVersion: cmoperator.io/v1alpha1
 kind: CustomMetric
 metadata:
   name: cm

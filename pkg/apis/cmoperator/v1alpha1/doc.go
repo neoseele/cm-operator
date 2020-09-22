@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 // +k8s:deepcopy-gen=package
-// +groupName=cmoperator.k8s.io
+// +groupName=cmoperator.io
 
 // Package v1alpha1 is the v1alpha1 version of the API.
 package v1alpha1 // import "k8s.io/cm-operator/pkg/apis/cmoperator/v1alpha1"

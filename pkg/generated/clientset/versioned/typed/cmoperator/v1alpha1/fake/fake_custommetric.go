@@ -36,9 +36,9 @@ type FakeCustomMetrics struct {
 	ns   string
 }
 
-var custommetricsResource = schema.GroupVersionResource{Group: "cmoperator.k8s.io", Version: "v1alpha1", Resource: "custommetrics"}
+var custommetricsResource = schema.GroupVersionResource{Group: "cmoperator.io", Version: "v1alpha1", Resource: "custommetrics"}
 
-var custommetricsKind = schema.GroupVersionKind{Group: "cmoperator.k8s.io", Version: "v1alpha1", Kind: "CustomMetric"}
+var custommetricsKind = schema.GroupVersionKind{Group: "cmoperator.io", Version: "v1alpha1", Kind: "CustomMetric"}
 
 // Get takes name of the customMetric, and returns the corresponding customMetric object, and an error if there is any.
 func (c *FakeCustomMetrics) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CustomMetric, err error) {
