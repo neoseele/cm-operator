@@ -37,7 +37,7 @@ type CustomMetricSpec struct {
 	Project  string   `json:"project"`
 	Cluster  string   `json:"cluster"`
 	Location string   `json:"location"`
-	Metrics  []string `json:"Metrics"`
+	Metrics  []string `json:"metrics"`
 }
 
 // CustomMetricStatus is the status for a CustomMetric resource

@@ -275,7 +275,7 @@ func (c *Controller) syncHandler(key string) error {
 		// The CustomMetric resource may no longer exist, in which case we stop
 		// processing.
 		if errors.IsNotFound(err) {
-			utilruntime.HandleError(fmt.Errorf("customMetric '%s' in work queue no longer exists", key))
+			utilruntime.HandleError(fmt.Errorf("custommetric '%s' in work queue no longer exists", key))
 			return nil
 		}
 
@@ -333,13 +333,6 @@ func (c *Controller) syncHandler(key string) error {
 		return fmt.Errorf(msg)
 	}
 
-	// If an error occurs during Update, we'll requeue the item so we can
-	// attempt processing again later. This could have been caused by a
-	// temporary network failure, or any other transient reason.
-	if err != nil {
-		return err
-	}
-
 	// Finally, we update the status block of the CustomMetric resource to reflect the
 	// current state of the world
 	err = c.updateCustomMetricStatus(customMetric, deployment)
@@ -356,7 +349,10 @@ func (c *Controller) updateCustomMetricStatus(customMetric *cmv1alpha1.CustomMet
 	// You can use DeepCopy() to make a deep copy of original object and modify this copy
 	// Or create a copy manually for better performance
 	customMetricCopy := customMetric.DeepCopy()
+
 	customMetricCopy.Status.AvailableReplicas = deployment.Status.AvailableReplicas
+	// klog.Infof("%+v\n", customMetric)
+
 	// If the CustomResourceSubresources feature gate is not enabled,
 	// we must use Update instead of UpdateStatus to update the Status block of the CustomMetric resource.
 	// UpdateStatus will not allow changes to the Spec of the resource,
@@ -409,7 +405,7 @@ func (c *Controller) handleObject(obj interface{}) {
 
 		customMetric, err := c.customMetricsLister.CustomMetrics(object.GetNamespace()).Get(ownerRef.Name)
 		if err != nil {
-			klog.V(4).Infof("ignoring orphaned object '%s' of customMetric '%s'", object.GetSelfLink(), ownerRef.Name)
+			klog.V(4).Infof("ignoring orphaned object '%s' of custommetric '%s'", object.GetSelfLink(), ownerRef.Name)
 			return
 		}
 

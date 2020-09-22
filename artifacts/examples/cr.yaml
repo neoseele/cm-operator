@@ -7,6 +7,6 @@ spec:
   cluster: ebpf
   location: australia-southeast1-a
   metrics:
-    - cilium_*
+    - cilium_.*
     - container_network_transmit_packets_total
     - container_network_receive_packets_total

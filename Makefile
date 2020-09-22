@@ -34,12 +34,12 @@ clean:
 	-@docker rmi $(REPO_NAME)/$(IMAGE_NAME)
 
 deploy:
-	@kubectl apply -f ./artifacts/examples/crd-validation.yaml
+	@kubectl apply -f ./artifacts/examples/crd.yaml
 	@kubectl apply -f ./artifacts/examples/controller.yaml
 	@kubectl apply -f ./artifacts/examples/cr.yaml
 
 teardown:
 	-@kubectl delete -f ./artifacts/examples/cr.yaml
-	-@kubectl delete -f ./artifacts/examples/crd-validation.yaml
+	-@kubectl delete -f ./artifacts/examples/crd.yaml
 	-@kubectl delete -f ./artifacts/examples/controller.yaml
 

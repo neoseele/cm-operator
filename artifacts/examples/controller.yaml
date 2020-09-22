@@ -34,9 +34,10 @@ spec:
         app: custommetric-controller
     spec:
       containers:
-      - image: neoseele/cm-operator:latest
+      - name: custommetric-controller
+        # image: neoseele/cm-operator:latest
+        image: gcr.io/nmiu-play/cm-operator:latest
         imagePullPolicy: Always
-        name: custommetric-controller
         resources:
           limits:
             cpu: 300m
