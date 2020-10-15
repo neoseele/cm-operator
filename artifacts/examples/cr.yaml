@@ -4,8 +4,8 @@ metadata:
   name: cm
 spec:
   project: nmiu-play
-  cluster: ebpf
-  location: australia-southeast1-a
+  cluster: foo2
+  location: us-central1-a
   metrics:
     - cilium_.*
     - container_network_transmit_packets_total
