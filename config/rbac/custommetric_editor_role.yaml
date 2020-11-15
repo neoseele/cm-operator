@@ -1,0 +1,24 @@
+# permissions for end users to edit custommetrics.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: custommetric-editor-role
+rules:
+- apiGroups:
+  - cm.example.com
+  resources:
+  - custommetrics
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cm.example.com
+  resources:
+  - custommetrics/status
+  verbs:
+  - get

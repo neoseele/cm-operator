@@ -1,0 +1,12 @@
+apiVersion: cm.example.com/v1
+kind: CustomMetric
+metadata:
+  name: cm
+spec:
+  project: nmiu-play
+  cluster: ss
+  location: australia-southeast1-a
+  metrics:
+    - cilium_.*
+    - container_network_transmit_packets_total
+    - container_network_receive_packets_total
