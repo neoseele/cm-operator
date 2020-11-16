@@ -15,4 +15,5 @@
 vendor/
 
 # operator-sdk specific
+bin/
 testbin/bin/
